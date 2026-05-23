@@ -1,73 +1,277 @@
-# React + TypeScript + Vite
+# 🚀 AutoDev Squad
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI-powered multi-agent development workspace built using React, TypeScript, Supabase, and Edge Functions.
 
-Currently, two official plugins are available:
+AutoDev Squad is an intelligent developer collaboration platform designed to automate workflows, manage AI agents, generate outputs, and provide a modern dashboard experience for software teams and hackathon projects.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+# 🌟 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🤖 AI Agent Workflow
+- Multi-agent architecture
+- Real-time AI output panel
+- Workflow timeline visualization
+- Agent orchestration system
+- Markdown rendering support
 
-## Expanding the ESLint configuration
+## 🎨 Modern Frontend
+- React + TypeScript
+- TailwindCSS UI
+- Responsive dashboard
+- Sidebar navigation system
+- Reusable UI components
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ☁️ Backend & Infrastructure
+- Supabase integration
+- Edge Functions support
+- Authentication-ready architecture
+- Database migration support
+- Scalable cloud backend
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📊 Dashboard System
+- Workspace management
+- Saved projects page
+- Interactive agent cards
+- Loading animations
+- Modular layouts
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 🛠️ Tech Stack
+
+## Frontend
+- React
+- TypeScript
+- Vite
+- TailwindCSS
+
+## Backend
+- Supabase
+- Supabase Edge Functions
+- PostgreSQL
+
+## Development Tools
+- ESLint
+- npm
+- Git & GitHub
+
+---
+
+# 📂 Project Structure
+
+```bash
+src/
+│
+├── components/
+│   ├── agents/
+│   ├── layout/
+│   └── ui/
+│
+├── lib/
+│   ├── api.ts
+│   ├── agents.ts
+│   └── supabase.ts
+│
+├── pages/
+│   ├── DashboardPage.tsx
+│   ├── LandingPage.tsx
+│   ├── SavedProjectPage.tsx
+│   └── WorkspacePage.tsx
+│
+├── types/
+│
+└── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# ⚙️ Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/AutoDev-Squad.git
 ```
+
+## 2️⃣ Navigate into the Project
+
+```bash
+cd AutoDev-Squad
+```
+
+## 3️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+# 🔑 Environment Variables
+
+Create a `.env` file in the root directory.
+
+```env
+VITE_SUPABASE_URL=YOUR_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+
+---
+
+# 🧩 Running the Project
+
+## Start Development Server
+
+```bash
+npm run dev
+```
+
+Project will run at:
+
+```bash
+http://localhost:5173
+```
+
+---
+
+# 🗄️ Database Setup
+
+Run Supabase migrations:
+
+```bash
+supabase db push
+```
+
+Example schema:
+
+```sql
+create table profiles (
+  id uuid references auth.users(id) primary key,
+  username text unique,
+  created_at timestamptz default now()
+);
+```
+
+---
+
+# ☁️ Supabase Edge Functions
+
+Edge functions are located in:
+
+```bash
+supabase/functions/
+```
+
+Deploy functions:
+
+```bash
+supabase functions deploy autodev-ai
+```
+
+---
+
+# 🧠 AI Architecture
+
+The platform follows a modular AI-agent architecture:
+
+- Planner Agent
+- Execution Agent
+- Output Formatter
+- Workflow Tracker
+- Dashboard Renderer
+
+Each agent is isolated and communicates through centralized orchestration logic.
+
+---
+
+# 🎨 UI Components
+
+## Core Components
+- AgentCard
+- GlowCard
+- LoadingOrb
+- WorkflowTimeline
+- MarkdownOutput
+
+## Layout Components
+- Sidebar
+- AppLayout
+
+---
+
+# 📈 Future Improvements
+
+- Multi-user collaboration
+- Real-time WebSocket communication
+- AI memory system
+- Vector database integration
+- RAG pipeline
+- Voice-based AI interaction
+- Docker deployment
+- CI/CD pipelines
+
+---
+
+# 🔒 Security
+
+- Never expose service role keys
+- Environment variables stored securely
+- Row Level Security (RLS) support
+- Supabase authentication integration
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+## Steps
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push branch
+
+```bash
+git push origin feature-name
+```
+
+5. Open a Pull Request
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Author
+
+AutoDev Squad Team
+
+---
+
+# ⭐ Support
+
+If you found this project useful:
+- Star the repository
+- Share the project
+- Contribute improvements
+
+---
+
+# 🚀 Vision
+
+AutoDev Squad aims to become a next-generation AI-powered software engineering workspace capable of orchestrating autonomous development workflows using collaborative AI agents.
