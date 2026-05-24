@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Zap, AlertCircle, CheckCircle2, Cpu } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeft, AlertCircle, CheckCircle2, Cpu } from "lucide-react";
 
 import AppLayout from "../components/layout/AppLayout";
 import WorkflowTimeline from "../components/ui/WorkflowTimeline";
@@ -20,11 +20,10 @@ export default function WorkspacePage() {
   const navigate = useNavigate();
 
   const idea = searchParams.get("idea") ?? "";
-  const mode =
-    searchParams.get("mode") === "individual" ? "individual" : "full";
+  const mode = searchParams.get("mode") === "individual" ? "individual" : "full";
   const agentKey = (searchParams.get("agent") ?? "") as AgentKey;
 
-  const [steps, setSteps] = useState<WorkflowStep[]>(() =>
+  const [steps, setSteps] = useState<WorkflowStep[]>(
     ALL_AGENT_KEYS.map((key) => ({
       agentKey: key,
       status:
@@ -36,15 +35,13 @@ export default function WorkspacePage() {
     }))
   );
 
-  const [outputs, setOutputs] = useState<Partial<Record<AgentKey, string>>>(
-    {}
-  );
-
+  const [outputs, setOutputs] = useState<Partial<Record<AgentKey, string>>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
   const ranRef = useRef(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ranRef.current) return;
@@ -57,6 +54,11 @@ export default function WorkspacePage() {
 
     run();
   }, []);
+
+  // ✅ AUTO SCROLL FIX
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [outputs, loading]);
 
   async function run() {
     setLoading(true);
@@ -77,8 +79,7 @@ export default function WorkspacePage() {
         agentKey: mode === "individual" ? agentKey : undefined,
       });
 
-      const relevantKeys =
-        mode === "full" ? ALL_AGENT_KEYS : [agentKey];
+      const relevantKeys = mode === "full" ? ALL_AGENT_KEYS : [agentKey];
 
       for (let i = 0; i < relevantKeys.length; i++) {
         const key = relevantKeys[i];
@@ -90,8 +91,7 @@ export default function WorkspacePage() {
 
         setSteps((prev) =>
           prev.map((s) => {
-            if (s.agentKey === key)
-              return { ...s, status: "done" };
+            if (s.agentKey === key) return { ...s, status: "done" };
 
             if (
               i < relevantKeys.length - 1 &&
@@ -127,104 +127,104 @@ export default function WorkspacePage() {
     steps.some((s) => s.agentKey === a.key && s.status === "running")
   );
 
-  const outputEntries = Object.entries(outputs) as [
-    AgentKey,
-    string
-  ][];
+  const outputEntries = Object.entries(outputs) as [AgentKey, string][];
 
   return (
     <AppLayout>
-      {/* 🔥 CRITICAL FIX: allow page scrolling */}
-      <div className="relative min-h-screen px-6 py-8 overflow-y-auto">
-
-        <div className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full bg-blue-700/5 blur-[150px] pointer-events-none" />
+      {/* ROOT FIXED LAYOUT */}
+      <div className="h-screen flex flex-col px-8 py-10 bg-[#0c0a12] text-white overflow-hidden">
 
         {/* HEADER */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-white mb-4"
-          >
-            <ArrowLeft size={14} /> Back
-          </button>
+        <div className="shrink-0 mb-8">
+          <motion.div>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="flex items-center gap-2 text-xs text-gray-500 hover:text-white mb-5"
+            >
+              <ArrowLeft size={12} /> Return
+            </button>
 
-          <h1 className="text-2xl font-black text-white">
-            Workspace
-          </h1>
+            <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+              <Cpu size={14} className="text-purple-400" />
+              AutoDev Squad / Workspace
+            </div>
 
-          <p className="text-sm text-gray-500 mt-1">{idea}</p>
-        </motion.div>
+            <h1 className="text-3xl font-semibold">
+              Squad <span className="text-purple-400">Workspace</span>
+            </h1>
 
-        {/* GRID */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-6">
+            <p className="text-gray-400 mt-2">{idea}</p>
+          </motion.div>
+        </div>
 
-          {/* SIDEBAR */}
-          <div className="xl:col-span-1">
-            <GlowCard glowColor="rgba(6,182,212,0.1)">
-              <div className="p-5">
-                <WorkflowTimeline steps={steps} />
+        {/* GRID (IMPORTANT min-h-0 FIX) */}
+        <div className="flex-1 grid grid-cols-1 xl:grid-cols-4 gap-8 min-h-0">
 
-                {done && (
-                  <div className="mt-4 text-emerald-400 text-xs">
-                    ✓ Completed
-                  </div>
-                )}
-              </div>
+          {/* LEFT */}
+          <div className="xl:col-span-1 min-h-0">
+            <GlowCard glowColor="rgba(147,51,234,0.15)">
+              <WorkflowTimeline steps={steps} />
+
+              {done && (
+                <div className="mt-5 text-green-400 text-xs flex items-center gap-2">
+                  <CheckCircle2 size={14} />
+                  Completed
+                </div>
+              )}
             </GlowCard>
           </div>
 
-          {/* OUTPUT AREA */}
-          {/* 🔥 CRITICAL FIX: scrollable column */}
-          <div className="xl:col-span-3 space-y-4 max-h-screen overflow-y-auto pr-2">
+          {/* RIGHT SCROLL FIX */}
+          <div className="xl:col-span-3 flex flex-col min-h-0">
 
-            {/* LOADING */}
-            <AnimatePresence>
+            <div className="flex-1 overflow-y-auto pr-3 space-y-5">
+
+              {/* LOADING */}
               {loading && outputEntries.length === 0 && (
-                <motion.div>
-                  <LoadingOrb
-                    label={
-                      activeAgent
-                        ? `${activeAgent.name} working...`
-                        : "Loading..."
-                    }
-                    agentColor={
-                      activeAgent?.color ??
-                      "from-cyan-500 to-blue-600"
-                    }
-                  />
-                </motion.div>
+                <LoadingOrb
+                  label={
+                    activeAgent
+                      ? `${activeAgent.name} working...`
+                      : "Initializing..."
+                  }
+                />
               )}
-            </AnimatePresence>
 
-            {/* ERROR */}
-            {error && (
-              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
-                {error}
-              </div>
-            )}
+              {/* ERROR */}
+              {error && (
+                <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl flex gap-2">
+                  <AlertCircle size={16} />
+                  {error}
+                </div>
+              )}
 
-            {/* OUTPUTS */}
-            {outputEntries.map(([key, content]) => (
-              <AgentOutputPanel
-                key={key}
-                agentKey={key}
-                content={content}
-              />
-            ))}
+              {/* OUTPUTS */}
+              {outputEntries.map(([key, content]) => (
+                <AgentOutputPanel
+                  key={key}
+                  agentKey={key}
+                  content={content}
+                />
+              ))}
 
-            {/* LOADING CONTINUATION */}
-            {loading && outputEntries.length > 0 && (
-              <div className="p-4 text-gray-400 text-sm">
-                Generating next agent...
-              </div>
-            )}
+              {/* LOADING CONTINUE */}
+              {loading && outputEntries.length > 0 && (
+                <div className="text-gray-500 text-xs animate-pulse">
+                  Generating next agent...
+                </div>
+              )}
 
-            {/* DONE */}
-            {done && (
-              <div className="text-emerald-400 text-sm font-semibold">
-                All agents completed
-              </div>
-            )}
+              {/* DONE */}
+              {done && (
+                <div className="text-center text-gray-500 text-xs">
+                  All agents completed
+                </div>
+              )}
+
+              {/* AUTO SCROLL TARGET */}
+              <div ref={bottomRef} />
+            </div>
+
           </div>
         </div>
       </div>
