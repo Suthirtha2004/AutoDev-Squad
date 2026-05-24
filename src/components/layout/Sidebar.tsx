@@ -75,7 +75,7 @@ export default function Sidebar() {
       <div className="px-3 pb-6 border-t border-cyan-500/20 pt-4">
         <div className="hidden md:flex items-center gap-2 px-3 py-2">
           <Zap size={14} className="text-cyan-400" />
-          <span className="text-xs text-gray-500">Powered by Gemini AI</span>
+          <span className="text-xs text-gray-500">Powered by AutoDev Squad</span>
         </div>
       </div>
     </motion.aside>

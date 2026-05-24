@@ -1,4 +1,4 @@
-import type { AgentConfig } from "../../types";
+import type { AgentConfig } from "../types";
 
 export const AGENTS: AgentConfig[] = [
   {

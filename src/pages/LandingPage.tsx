@@ -283,7 +283,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/5 px-8 py-6 text-center text-xs text-gray-600">
-        AutoDev Squad — Agentic AI powered by Gemini
+        @Copyright 2026 by AutoDev Squad — Agentic AI
       </footer>
     </div>
   );
