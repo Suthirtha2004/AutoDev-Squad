@@ -64,7 +64,6 @@ export default function AgentOutputPanel({ agentKey, content }: Props) {
             <div className="p-4 border-t border-white/5">
               <MarkdownOutput
                 content={content}
-                agentColor={agent.color}
                 glowColor={agent.glowColor}
               />
             </div>
