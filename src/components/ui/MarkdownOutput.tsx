@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 
 interface Props {
   content: string;
-  agentColor: string;
   glowColor: string;
 }
 
@@ -103,7 +102,7 @@ function renderMarkdown(text: string): React.ReactNode[] {
   return elements;
 }
 
-export default function MarkdownOutput({ content, agentColor, glowColor }: Props) {
+export default function MarkdownOutput({ content, glowColor }: Props) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
