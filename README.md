@@ -4,7 +4,7 @@ AI-powered multi-agent development workspace built using React, TypeScript, Supa
 
 AutoDev Squad is an intelligent developer collaboration platform designed to automate workflows, manage AI agents, generate outputs, and provide a modern dashboard experience for software teams and hackathon projects.
 
-👉 [Live app](https://auto-dev-squad.vercel.app/)
+👉 [Live app](https://auto-dev-squad-rqhj.vercel.app/)
 ---
 
 👉 [Click here to view demo](https://drive.google.com/file/d/1iYSFYvbL0PDZBvxathAioR-SYDsuBzbn/view?usp=drivesdk)
