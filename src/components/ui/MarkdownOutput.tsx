@@ -5,39 +5,19 @@ interface Props {
   glowColor: string;
 }
 
-// Minimal markdown renderer — handles bold, headers, bullets, numbered lists, code blocks
+// Minimal markdown renderer — handles bold, headers, bullets, code blocks
 function renderMarkdown(text: string): React.ReactNode[] {
-  const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+  const lines = text.split("\n");
   const elements: React.ReactNode[] = [];
   let inCodeBlock = false;
   let codeLines: string[] = [];
   let codeKey = 0;
-  let listType: "ul" | "ol" | null = null;
-  let listItems: React.ReactNode[] = [];
 
-  const flushList = () => {
-    if (!listType || listItems.length === 0) return;
-
-    elements.push(
-      listType === "ul" ? (
-        <ul key={`list-${elements.length}`} className="space-y-2 ml-4 list-none">
-          {listItems}
-        </ul>
-      ) : (
-        <ol key={`list-${elements.length}`} className="space-y-2 ml-4 list-none">
-          {listItems}
-        </ol>
-      )
-    );
-
-    listType = null;
-    listItems = [];
-  };
-
-  const parseLine = (line: string): React.ReactNode => {
+  const parseLine = (line: string, key: number): React.ReactNode => {
+    // Bold **text**
     const parts = line.split(/(\*\*[^*]+\*\*)/g);
     return (
-      <span>
+      <span key={key}>
         {parts.map((part, i) =>
           part.startsWith("**") && part.endsWith("**") ? (
             <strong key={i} className="text-white font-semibold">
@@ -51,12 +31,9 @@ function renderMarkdown(text: string): React.ReactNode[] {
     );
   };
 
-  lines.forEach((rawLine, i) => {
-    const line = rawLine.trimEnd();
-
-    if (line.startsWith("```") || line === "```") {
+  lines.forEach((line, i) => {
+    if (line.startsWith("```")) {
       if (inCodeBlock) {
-        flushList();
         elements.push(
           <pre
             key={`code-${codeKey++}`}
@@ -68,71 +45,59 @@ function renderMarkdown(text: string): React.ReactNode[] {
         codeLines = [];
         inCodeBlock = false;
       } else {
-        flushList();
         inCodeBlock = true;
       }
       return;
     }
 
     if (inCodeBlock) {
-      codeLines.push(rawLine);
+      codeLines.push(line);
       return;
     }
 
     if (line.startsWith("## ")) {
-      flushList();
       elements.push(
         <h2 key={i} className="text-base font-bold text-white mt-5 mb-2 border-b border-white/10 pb-1">
           {line.slice(3)}
         </h2>
       );
     } else if (line.startsWith("# ")) {
-      flushList();
       elements.push(
         <h1 key={i} className="text-lg font-bold text-white mt-5 mb-2">
           {line.slice(2)}
         </h1>
       );
     } else if (line.startsWith("### ")) {
-      flushList();
       elements.push(
         <h3 key={i} className="text-sm font-bold text-gray-200 mt-4 mb-1">
           {line.slice(4)}
         </h3>
       );
     } else if (line.match(/^[-*] /)) {
-      if (listType === "ol") flushList();
-      listType = "ul";
-      listItems.push(
-        <li key={i} className="text-sm text-gray-300 leading-relaxed flex gap-2">
-          <span className="text-cyan-500 shrink-0 mt-1">›</span>
-          <span>{parseLine(line.slice(2))}</span>
+      elements.push(
+        <li key={i} className="text-sm text-gray-300 leading-relaxed ml-4 list-none flex gap-2">
+          <span className="text-cyan-500 flex-shrink-0 mt-1">›</span>
+          <span>{parseLine(line.slice(2), 0)}</span>
         </li>
       );
     } else if (line.match(/^\d+\. /)) {
-      if (listType === "ul") flushList();
-      listType = "ol";
       const num = line.match(/^(\d+)\. /)?.[1];
-      listItems.push(
-        <li key={i} className="text-sm text-gray-300 leading-relaxed flex gap-2">
-          <span className="text-cyan-500 shrink-0 font-mono text-xs mt-1">{num}.</span>
-          <span>{parseLine(line.replace(/^\d+\. /, ""))}</span>
+      elements.push(
+        <li key={i} className="text-sm text-gray-300 leading-relaxed ml-4 list-none flex gap-2">
+          <span className="text-cyan-500 flex-shrink-0 font-mono text-xs mt-1">{num}.</span>
+          <span>{parseLine(line.replace(/^\d+\. /, ""), 0)}</span>
         </li>
       );
     } else if (line.trim() === "") {
-      flushList();
       elements.push(<div key={i} className="h-2" />);
     } else {
-      flushList();
       elements.push(
         <p key={i} className="text-sm text-gray-300 leading-relaxed">
-          {parseLine(line)}
+          {parseLine(line, 0)}
         </p>
       );
     }
   });
-
-  flushList();
 
   return elements;
 }
